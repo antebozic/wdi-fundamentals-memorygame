@@ -1,4 +1,4 @@
-//array to store card info
+//array to store cards
 var cards = [
 {
 	rank: 'queen',
@@ -22,34 +22,74 @@ var cards = [
 }
 ];
 
-//array to store selected card info
+//array to store selected cards
 var cardsInPlay = [];
+
+//score display
+var score =  0;
+
+var settingScore = function (){
+document.getElementById('score').textContent = "Score "+score;
+};
+
+settingScore();
 
 //checking cards for same rank property
 var checkForMatch = function(){
 	if (cardsInPlay[0] === cardsInPlay[1]) {
-      alert("You found a match!");
-  } else {
+		score += 100;
+		settingScore();
+		alert("You found a match!");
+ } else {
       alert("Sorry, try again.");
   }
-}
+};
+
 
 //function storing selected card and checking for match
-var flipCard = function (cardID){
-
-console.log("User fipped "+cards[cardID].rank);
-cardsInPlay.push(cards[cardID].rank);
-console.log(cards[cardID].cardImage);
-console.log(cards[cardID].suit);
+var flipCard = function(){
+	
+	var cardId = this.getAttribute('data-id');
+	console.log('User flipped ' + cards[cardId].rank);
+	cardsInPlay.push(cards[cardId].rank);
+	console.log(cards[cardId].cardImage);
+	console.log(cards[cardId].suit);
+	this.setAttribute('src', cards[cardId].cardImage);
 
 
 if(cardsInPlay.length === 2){
 	checkForMatch();
+	cardsInPlay.length = 0;
 }};
 
+var createBoard = function (){
+//checking for existing board of cards and removing it
+	if(document.getElementById('game-board').firstChild){
+		var myNode = document.getElementById('game-board');
+		while (myNode.firstChild){
+		myNode.removeChild(myNode.firstChild);
+		}
+	}
 
-flipCard(0);
-flipCard(2);
+//creating new board
+	for( var i=0; i<cards.length; i++){
+
+		var cardElement = document.createElement('img');
+		cardElement.setAttribute('src','images/back.png');
+		cardElement.setAttribute('data-id', i);
+		cardElement.addEventListener('click', flipCard);
+		document.getElementById('game-board').appendChild(cardElement);
+	}
+};
+
+createBoard();
+
+//listener for creating new board of cards
+var buttonListen = document.getElementById('new_game');
+buttonListen.addEventListener('click', createBoard);
+
+
+
 
 
 
